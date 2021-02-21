@@ -9,15 +9,27 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const authorization = event.headers.Authorization;
   const split = authorization.split(' ');
   const jwtToken = split[1];
-  const toDoItem = await createToDo(newTodo, jwtToken);
 
-  return {
-    statusCode: 201,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
-    body: JSON.stringify({
-      "item": toDoItem
-    }),
+  if (newTodo.name) {
+    const toDoItem = await createToDo(newTodo, jwtToken);
+    return {
+      statusCode: 201,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: JSON.stringify({
+        "item": toDoItem
+      }),
+    }
+  } else {
+    return {
+      statusCode: 400,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: JSON.stringify({
+        "message": "Please fill all the fields"
+      }),
+    }
   }
 }
